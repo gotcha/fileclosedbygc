@@ -3,13 +3,14 @@
 """Main module."""
 
 import __builtin__
+import logging
+import os
 import traceback
 
-import logging
 
-log = logging.getLogger('TracedFile')
+log = logging.getLogger('closed by gc')
 
-
+modes_to_filter = os.environ.get('CLOSEDBYGC', 'r').split(',')
 
 
 def stack():
@@ -35,7 +36,7 @@ class TracedFile(file):
         return new
 
     def __del__(self):
-        if not self.closed:
+        if not self.closed and self.mode not in modes_to_filter:
             self.log_stack()
             self.close()
 
