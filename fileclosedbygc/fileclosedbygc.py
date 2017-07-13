@@ -10,7 +10,7 @@ import traceback
 
 log = logging.getLogger('fileclosedbygc')
 
-modes_to_filter = os.environ.get('CLOSEDBYGC', 'r').split(',')
+modes_to_filter = os.environ.get('CLOSEDBYGC', 'r,rb').split(',')
 
 
 def stack():
