@@ -8,7 +8,7 @@ import os
 import traceback
 
 
-log = logging.getLogger('closed by gc')
+log = logging.getLogger('fileclosedbygc')
 
 modes_to_filter = os.environ.get('CLOSEDBYGC', 'r').split(',')
 
@@ -27,11 +27,11 @@ class TracedFile(file):
         self.open_stack = stack()
 
     def close(self):
-        log.debug("closed %s", self.name)
+        log.debug("Closed %s", self.name)
         super(TracedFile, self).close()
 
     def __new__(typ, name, mode):
-        log.debug("new TracedFile %s %s", name, mode)
+        log.debug("New TracedFile %s %s", name, mode)
         new = file.__new__(typ, name, mode)
         return new
 
@@ -42,17 +42,17 @@ class TracedFile(file):
 
     def log_stack(self):
         tolog = list()
-        tolog.append("closed by gc %s" % self.name)
+        tolog.append("Closed by GC %s" % self.name)
         tolog.extend(stack()[:-3])
-        tolog.append("opened at")
+        tolog.append("Opened at")
         tolog.extend(self.open_stack[:-3])
         log.info('\n'.join(tolog))
 
 
 def trace_open(name, mode='r'):
-    log.debug("open %s", name)
+    log.debug("Open %s", name)
     return TracedFile(name, mode)
 
 orig_open = __builtin__.open
 setattr(__builtin__, 'open', trace_open)
-log.warning('monkeypatching builtin open')
+log.warning('Monkeypatching builtin open')
