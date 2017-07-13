@@ -48,9 +48,10 @@ class TracedFile(file):
         log.info('\n'.join(tolog))
 
 
-def trace_open(name, mode):
+def trace_open(name, mode='r'):
     log.debug("open %s", name)
     return TracedFile(name, mode)
 
 orig_open = __builtin__.open
 setattr(__builtin__, 'open', trace_open)
+log.warning('monkeypatching builtin open')
